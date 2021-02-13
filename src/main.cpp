@@ -1,4 +1,5 @@
 #include "configuration.hpp"
+#include "save_png.hpp"
 #include <vector>
 
 struct Camera
@@ -32,5 +33,6 @@ int main()
 {
     auto canvas = createCanvas();
 
+    save_png(canvas, "test.png");
     return 0;
 }

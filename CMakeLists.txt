@@ -16,6 +16,9 @@ set(FOV 90. CACHE STRING "Field of view")
 configure_file(cmake/configuration.hpp.in configuration.hpp)
 include_directories(${PROJECT_BINARY_DIR})
 
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address" )
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined" )
+
 enable_testing()
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
