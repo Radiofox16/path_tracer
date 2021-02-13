@@ -1,0 +1,34 @@
+/**
+ * @file configuration.hpp.in
+ * @author Ilya Kostin
+ * @brief Config variables here
+ * @date 2021-02-13
+ */
+#pragma once
+#include <cmath>
+#include <cstdint>
+#include <vector>
+
+// USER DEFINED CONSTs
+constexpr auto IMAGE_WIDTH = ${IMAGE_WIDTH};
+constexpr auto IMAGE_HEIGHT = ${IMAGE_HEIGHT};
+constexpr auto RAY_MAX_DEPTH = ${RAY_MAX_DEPTH};
+constexpr auto RAYS_PER_PIXEL = ${RAYS_PER_PIXEL};
+constexpr auto FOV_DEG = float(${FOV});
+
+// CONFIGURATION
+constexpr auto degree2rad(auto degrees)
+{
+    return degrees * M_PI / 180.;
+}
+
+constexpr auto FOV_RAD = degree2rad(FOV_DEG);
+constexpr auto ASPECT_RATIO =
+    static_cast<float>(IMAGE_HEIGHT) / static_cast<float>(IMAGE_WIDTH); // height / width
+
+#include <Eigen/Core>
+using Vector3f = Eigen::Vector3f;
+using Color = Vector3f;
+
+static const Color BACKGROUND_COLOR{0., 0., 0.};
+using Canvas = std::vector<std::array<Color, IMAGE_WIDTH>>;
