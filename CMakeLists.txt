@@ -10,7 +10,7 @@ set(CMAKE_C_STANDARD_REQUIRED TRUE)
 set(IMAGE_WIDTH 1000 CACHE STRING "Image width")
 set(IMAGE_HEIGHT 1000 CACHE STRING "Image height")
 set(RAY_MAX_DEPTH 32 CACHE STRING "Maximum reflection/refraction count")
-set(RAYS_PER_PIXEL 1024 CACHE STRING "Rays per pixel")
+set(RAYS_PER_PIXEL 128 CACHE STRING "Rays per pixel")
 set(FOV 60. CACHE STRING "Field of view")
 
 configure_file(cmake/configuration.hpp.in configuration.hpp)

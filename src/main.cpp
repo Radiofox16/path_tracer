@@ -129,8 +129,8 @@ struct Camera
 
     Vector3f verticalStepPerPixel() const
     {
-        auto up_norm = -up.normalized();
-        return std::tan(degree2rad(ASPECT_RATIO * FOV_DEG * 0.5)) * up / (IMAGE_HEIGHT / 2);
+        Vector3f up_norm = -up.normalized();
+        return std::tan(degree2rad(ASPECT_RATIO * FOV_DEG * 0.5)) * up_norm / (IMAGE_HEIGHT / 2);
     }
 };
 
