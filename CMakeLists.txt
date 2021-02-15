@@ -7,14 +7,16 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
 
-set(IMAGE_WIDTH 800 CACHE STRING "Image width")
-set(IMAGE_HEIGHT 800 CACHE STRING "Image height")
-set(RAY_MAX_DEPTH 800 CACHE STRING "Maximum reflection/refraction count")
-set(RAYS_PER_PIXEL 800 CACHE STRING "Rays per pixel")
-set(FOV 90. CACHE STRING "Field of view")
+set(IMAGE_WIDTH 1000 CACHE STRING "Image width")
+set(IMAGE_HEIGHT 1000 CACHE STRING "Image height")
+set(RAY_MAX_DEPTH 32 CACHE STRING "Maximum reflection/refraction count")
+set(RAYS_PER_PIXEL 1024 CACHE STRING "Rays per pixel")
+set(FOV 60. CACHE STRING "Field of view")
 
 configure_file(cmake/configuration.hpp.in configuration.hpp)
 include_directories(${PROJECT_BINARY_DIR})
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native" )
 
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address" )
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined" )

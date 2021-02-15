@@ -1,6 +1,7 @@
 #pragma once
 
 #include "configuration.hpp"
+#include <iostream>
 #include <png++/png.hpp>
 
 void save_png(const Canvas &cvs, std::string_view path)
@@ -24,7 +25,7 @@ void save_png(const Canvas &cvs, std::string_view path)
 
         for (auto x = 0; x < IMAGE_WIDTH; ++x)
         {
-            Eigen::Vector3f pix = (img_string[x] * 255.f) / max_float;
+            Vector3f pix = (img_string[x] * 255.f) / max_float;
             image[y][x] = png::rgb_pixel(pix[0], pix[1], pix[2]);
         }
     }

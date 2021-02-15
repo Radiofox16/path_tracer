@@ -27,8 +27,11 @@ constexpr auto ASPECT_RATIO =
     static_cast<float>(IMAGE_HEIGHT) / static_cast<float>(IMAGE_WIDTH); // height / width
 
 #include <Eigen/Core>
+#include <Eigen/Geometry>
 using Vector3f = Eigen::Vector3f;
+using Vector3d = Eigen::Vector3d;
 using Color = Vector3f;
 
 static const Color BACKGROUND_COLOR{0., 0., 0.};
 using Canvas = std::vector<std::array<Color, IMAGE_WIDTH>>;
+constexpr auto EPSILON = 0.001f;
