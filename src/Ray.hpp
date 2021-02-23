@@ -4,17 +4,20 @@
 
 struct Ray
 {
-    Vector3f origin;
-    Vector3f dir;
+    // Origin
+    Vec3 orn;
+
+    // Direction
+    Vec3 dir;
 
     /**
      * @brief 
      * origin + mult * dir
      * @param mult - multiplier for dir to calculate position on ray 
-     * @return Vector3f - position on ray
+     * @return Vec3 - position on ray
      */
-    Vector3f positionAlong(float mult)
+    Vec3 positionAlong(auto mult) const
     {
-        return origin + mult * dir;
+        return orn + mult * dir;
     }
 };

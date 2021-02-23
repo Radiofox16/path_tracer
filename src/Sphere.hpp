@@ -9,61 +9,35 @@ class Sphere
 {
 private:
     Material mat_;
-    Vector3f orig_;
+
+    // Center
+    Vec3 cnr_;
     float radius_;
 
 public:
-    Sphere(Material mat, Vector3f orig, float radius) : mat_(mat), orig_(orig), radius_(radius)
+    Sphere(Material mat, Vec3 orig, float radius) : mat_(mat), cnr_(orig), radius_(radius)
     {
     }
 
     Sphere(const Sphere &) = default;
     Sphere(Sphere &&) = default;
 
-    Vector3f intersect(const Ray &ray) const
+    Vec3::value_type intersect(const Ray &ray) const
     {
         auto A = ray.dir.dot(ray.dir);
-        auto B = 2 * (ray.origin - orig_).dot(ray.dir);
-        auto C = orig_.dot(orig_) - radius_ * radius_ - 2 * (ray.origin.dot(orig_)) + ray.origin.dot(ray.origin);
+        auto B = 2 * (ray.orn - cnr_).dot(ray.dir);
+        auto C = cnr_.dot(cnr_) - radius_ * radius_ - 2 * (ray.orn.dot(cnr_)) + ray.orn.dot(ray.orn);
 
         auto D = B * B - 4 * A * C;
         if (D < EPSILON)
-        {
-            auto tmp = std::numeric_limits<float>::infinity();
-            return {tmp, tmp, tmp};
-        }
+            return false;
 
-        auto const_part = -B / (2 * A);
-        auto discr_part = std::sqrt(D) / (2 * A);
-        if (const_part > 0.f)
-        {
-            if (const_part > discr_part)
-            {
-                return ray.origin + ray.dir * (const_part - discr_part);
-            }
-            else
-            {
-                return ray.origin + ray.dir * (const_part + discr_part);
-            }
-        }
+        B = -B / (2 * A);
+        D = std::sqrt(D) / (2 * A);
 
-        if (const_part + discr_part < EPSILON)
-        {
-            auto tmp = std::numeric_limits<float>::infinity();
-            return {tmp, tmp, tmp};
-        }
+        Vec3::value_type t;
 
-        return ray.origin + ray.dir * (const_part + discr_part);
-    }
-
-    bool intersects(const Ray &ray) const
-    {
-        auto A = ray.dir.dot(ray.dir);
-        auto B = 2 * (ray.origin - orig_).dot(ray.dir);
-        auto C = orig_.dot(orig_) - radius_ * radius_ - 2 * (ray.origin.dot(orig_)) + ray.origin.dot(ray.origin);
-
-        auto D = B * B - 4 * A * C;
-        return !(D < EPSILON && (std::sqrt(D) - B) < EPSILON);
+        return (t = B - D) > EPSILON ? t : ((t = B + D) > EPSILON ? t : 0);
     }
 
     constexpr auto &material() const
@@ -71,14 +45,8 @@ public:
         return mat_;
     }
 
-    const Vector3f normInPoint(const Vector3f &pnt) const
+    const Vec3 normInPoint(const Vec3 &pnt) const
     {
-        return pnt - orig_;
-    }
-
-    Ray interact(Ray ray, Vector3f interaction_point, const Material &ray_env) const
-    {
-        auto normal = normInPoint(interaction_point);
-        return mat_.interact(ray, interaction_point, normal, ray_env);
+        return pnt - cnr_;
     }
 };

@@ -28,9 +28,8 @@ constexpr auto ASPECT_RATIO =
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
-using Vector3f = Eigen::Vector3f;
-using Vector3d = Eigen::Vector3d;
-using Color = Vector3f;
+using Vec3 = Eigen::Vector3d;
+using Color = Vec3;
 
 static const Color BACKGROUND_COLOR{0., 0., 0.};
 using Canvas = std::vector<std::array<Color, IMAGE_WIDTH>>;

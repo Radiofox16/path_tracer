@@ -2,6 +2,7 @@
 
 #include "Ray.hpp"
 #include "configuration.hpp"
+#include "random.hpp"
 
 struct Material
 {
@@ -22,7 +23,7 @@ struct Material
     //! refractive index
     float refractive_idx;
 
-    Vector3f reflect_ideal(Vector3f failing_dir, Vector3f normal) const
+    Vec3 reflect_ideal(Vec3 failing_dir, Vec3 normal) const
     {
         auto n = normal.normalized();
         auto f = failing_dir.normalized();
@@ -33,37 +34,28 @@ struct Material
     }
 
     // Reflect direction
-    Vector3f reflect(Vector3f failing_dir, Vector3f normal) const
+    Vec3 reflect(Vec3 failing_dir, Vec3 normal) const
     {
         auto reflection = reflect_ideal(failing_dir, normal);
 
-        auto rnd = []() {
-            return static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-        };
+        double r1 = 2 * M_PI * erand48(SEED), r2 = erand48(SEED) * diffusion, r2s = sqrt(r2);
 
-        if (diffusion > EPSILON)
-        {
-            float diffs = diffusion;
-            if (diffs > (1. - EPSILON))
-                diffs = (1. - EPSILON);
+        reflection.normalize();
+        reflection *= std::sqrt(1 - r2);
+        Vec3 part1 = reflection.cross(normal).normalized() * std::cos(r1) * r2s;
+        Vec3 part2 = part1.cross(normal).normalized() * std::sin(r1) * r2s;
 
-            diffs *= M_PI_2;
-
-            Vector3f part1 = ((rnd() > 0.5) ? 1 : -1) * (reflection.cross(normal).normalized() * std::tan(diffs) * rnd());
-            Vector3f part2 = ((rnd() > 0.5) ? 1 : -1) * (part1.cross(normal).normalized() * std::tan(diffs) * rnd());
-
-            reflection += part1;
-            reflection += part2;
-        }
+        reflection += part1;
+        reflection += part2;
 
         return reflection;
     }
 
     // Refract direction
-    Vector3f refract(Vector3f failing_dir, Vector3f normal, const Material &ray_env) const
+    Vec3 refract(Vec3 failing_dir, Vec3 normal, const Material &ray_env) const
     {
-        const Vector3f n = normal.normalized();
-        const Vector3f f = failing_dir.normalized();
+        const Vec3 n = normal.normalized();
+        const Vec3 f = failing_dir.normalized();
         const double r = ray_env.refractive_idx / refractive_idx;
         const double cos_n_f = std::abs(n.dot(f));
 
@@ -74,29 +66,9 @@ struct Material
             return reflect_ideal(failing_dir, normal);
         }
 
-        Vector3f offs_part = (f + cos_n_f * n).normalized() * std::sqrt(sinT2);
-        Vector3f norm_part = -n * std::sqrt(1. - sinT2);
+        Vec3 offs_part = (f + cos_n_f * n).normalized() * std::sqrt(sinT2);
+        Vec3 norm_part = -n * std::sqrt(1. - sinT2);
 
         return offs_part + norm_part;
     }
-
-    Ray interact(Ray falling_ray, Vector3f interaction_point, Vector3f normal, const Material &ray_env) const
-    {
-        float r = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-
-        Ray result_ray(interaction_point, {});
-
-        if (transparency > r)
-        {
-            result_ray.dir = refract(falling_ray.dir, normal, ray_env);
-        }
-        else
-        {
-            result_ray.dir = reflect(falling_ray.dir, normal);
-        }
-
-        return result_ray;
-    }
 };
-
-static const Material AIR({1, 1, 1}, {0, 0, 0}, 0., 1., 1.);
